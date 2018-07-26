@@ -2,6 +2,8 @@
 
 var syntax        = 'scss'; // Syntax: sass or scss;
 
+var theme         = 'mytheme'; // Theme name
+
 var gulp          = require('gulp'),
 		gutil         = require('gulp-util' ),
 		sass          = require('gulp-sass'),
@@ -16,7 +18,7 @@ var gulp          = require('gulp'),
 		livereload 		= require('gulp-livereload'),
 		imagemin 			= require('gulp-imagemin'),
     sourcePath 		= './src/',
-    buildPath 		= './app/content/themes/mytheme/build/';
+    buildPath 		= './app/content/' + theme + '/mytheme/build/';
 
 		gulp.task('styles', function() {
 			return gulp.src(sourcePath + syntax + '/**/*.' + syntax)
@@ -28,11 +30,18 @@ var gulp          = require('gulp'),
 			.pipe(livereload());
 		});
 		
-		gulp.task('js', function() {
+		gulp.task('js-libs', function() {
 			return gulp.src([
-				'node_modules/jquery/dist/jquery.js',
-				sourcePath + 'js/common.js'
+				'node_modules/jquery/dist/jquery.js'
 			])
+			.pipe(concat('libs.min.js'))
+			.pipe(uglify())
+			.pipe(gulp.dest(buildPath + 'js'))
+			.pipe(livereload());
+		});
+
+		gulp.task('js', function() {
+			return gulp.src(sourcePath + 'js/common.js')
 			.pipe(babel({
 				presets: ['env', 'es2015']
 			}))
@@ -73,7 +82,7 @@ var gulp          = require('gulp'),
 			}))
 		});
 		
-		gulp.task('watch', ['styles', 'js', 'font', 'img'], function() {
+		gulp.task('watch', ['styles', 'js', 'js-libs', 'font', 'img'], function() {
 			livereload.listen();
 			gulp.watch(sourcePath + syntax + '/**/*.' + syntax, ['styles']);
 			gulp.watch([sourcePath + 'js/*.js'], ['js']);

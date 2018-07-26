@@ -9,6 +9,7 @@
 </head>
 <body>
 
+<script src="<?php echo get_template_directory_uri(); ?>/build/js/libs.min.js"></script>
 <script src="<?php echo get_template_directory_uri(); ?>/build/js/main.min.js"></script>
 </body>
 </html>
